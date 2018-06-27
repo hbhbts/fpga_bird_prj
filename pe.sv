@@ -34,6 +34,7 @@ localparam LF2RT_PN = 1;
 logic hit_id;
 logic [1-1:0] load_index;
 logic [IN_DATA_WIDTH-1:0] load_wgt[0:1];
+logic [IN_DATA_WIDTH-1:0] load_wgt_r0[0:1];
 logic [1-1:0] pop_index;
 logic pop_vld_s[0:UP2DN_PN];
 logic [OUT_DATA_WIDTH-1:0] up_data_r0;
@@ -56,6 +57,10 @@ end
 always_ff @(posedge clk) begin
 	if(hit_id == 1)
 		load_wgt[load_index] <= i_load_data;
+end
+
+always_ff @(posedge clk) begin
+	load_wgt_r0 <= load_wgt;
 end
 
 always_ff @(posedge clk) begin
@@ -89,10 +94,11 @@ assign o_pop_vld = pop_vld_s[UP2DN_PN];
 always_ff @(posedge clk) begin
 	up_data_r0 <= i_up_data;
 	left_data_r0 <= i_left_data;
+	left_data_r1 <= left_data_r0;
 end
 
 always_ff @(posedge clk) begin
-	down_data_r0 <= left_data_r0 * load_wgt[pop_index] + up_data_r0;
+	down_data_r0 <= left_data_r1 * load_wgt_r0[pop_index] + up_data_r1;
 	o_down_data <= down_data_r0;
 end
 
