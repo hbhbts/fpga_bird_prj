@@ -37,31 +37,32 @@ logic [IN_DATA_WIDTH-1:0] load_wgt[0:1-1];
 logic [1-1:0] pop_index;
 logic pop_vld_s[0:UP2DN_PN];
 logic [OUT_DATA_WIDTH-1:0] up_data_r0;
+logic [OUT_DATA_WIDTH-1:0] down_data_r0;
 logic [IN_DATA_WIDTH-1:0] left_data_r0;
 logic [IN_DATA_WIDTH-1:0] right_data_s[0:LF2RT_PN];
 
 
 
 
-assign hit_id = in_load_vld && i_load_id == ID_VAL;
+assign hit_id = i_load_vld && i_load_id == ID_VAL;
 
 always_ff @(posedge clk) begin
 	if(rst == 1)
 		load_index <= 0;
 	else if(hit_id == 1)
-		load_index <= load_index + 1;
+		load_index <= load_index + 1'd1;
 end
 
 always_ff @(posedge clk) begin
 	if(hit_id == 1)
-		load_wgt[load_index] <= load_data;
+		load_wgt[load_index] <= i_load_data;
 end
 
 always_ff @(posedge clk) begin
 	if(hit_id == 1)
 		o_load_vld <= 0;
 	else
-		o_load_vlad <= 1;
+		o_load_vld <= 1;
 	o_load_id <= i_load_id;
 	o_load_data <= o_load_data;
 end
@@ -70,13 +71,13 @@ always_ff @(posedge clk) begin
 	if(rst == 1)
 		pop_index <= 0;
 	else if(i_pop_vld == 1)
-		pop_index <= pop_index + 1;
+		pop_index <= pop_index + 1'd1;
 end
 
 assign pop_vld_s[0] = i_pop_vld;
 
 generate 
-	for(int i = 0; i < UP2DN_PN; i++) begin
+	for(genvar i = 0; i < UP2DN_PN; i++) begin: gen_pop_vld_s
 		always_ff @(posedge clk) begin
 			pop_vld_s[i+1] <= pop_vld_s[i];
 		end
@@ -98,8 +99,10 @@ end
 assign right_data_s[0] = i_left_data;
 
 generate
-	for(int i = 0; i < LF2RT_PN; i++) begin
-		right_data_s[i+1] <= right_data_s[i];
+	for(genvar i = 0; i < LF2RT_PN; i++) begin: gen_right_data_s
+		always_ff @(posedge clk) begin
+			right_data_s[i+1] <= right_data_s[i];
+		end
 	end
 endgenerate
 

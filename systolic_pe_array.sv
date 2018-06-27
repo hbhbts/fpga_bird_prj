@@ -1,12 +1,12 @@
 //systolic_pe_array
-`include "utls_pkg.sv"
+`include "utils_pkg.sv"
 
 module systolic_pe_array 
 #(
-	parameter int PE_ARRAY_W = 64;
-	parameter int PE_ARRAY_H = 64;
-	parameter int IN_DATA_WIDTH = 8;
-	parameter int OUT_DATA_WIDTH = 24;
+	parameter int PE_ARRAY_W = 4,
+	parameter int PE_ARRAY_H = 4,
+	parameter int IN_DATA_WIDTH = 8,
+	parameter int OUT_DATA_WIDTH = 24
 )
 (
 	input logic clk,
@@ -14,6 +14,7 @@ module systolic_pe_array
 	input logic i_load_vld[0:PE_ARRAY_W-1],
 	input logic [$clog2(PE_ARRAY_H)-1:0] i_load_id[0:PE_ARRAY_W-1],
 	input logic [IN_DATA_WIDTH-1:0] i_load_data[0:PE_ARRAY_W-1],
+	input logic i_pop_vld[0:PE_ARRAY_W-1],
 	input logic [IN_DATA_WIDTH-1:0] i_up_data[0:PE_ARRAY_W-1],
 	input logic [IN_DATA_WIDTH-1:0] i_left_data[0:PE_ARRAY_H-1],
 	output logic [OUT_DATA_WIDTH-1:0] o_down_data[0:PE_ARRAY_W-1]
@@ -28,7 +29,7 @@ logic [IN_DATA_WIDTH-1:0] stc_left_data[0:PE_ARRAY_W][0:PE_ARRAY_H-1];
 
 
 generate 
-	for(int i = 0; i < PE_ARRAY_W; i++) begin
+	for(genvar i = 0; i < PE_ARRAY_W; i++) begin: gen_stc_sigs
 		assign stc_load_vld[i][0] = i_load_vld[i];
 		assign stc_load_id[i][0] = i_load_id[i];
 		assign stc_load_data[i][0] = i_load_data[i];
@@ -36,14 +37,14 @@ generate
 		assign stc_up_data[i][0] = i_up_data[i];
 	end
 	
-	for(int i = 0; i < PE_ARRAY_H; i++) begin
+	for(genvar i = 0; i < PE_ARRAY_H; i++) begin: gen_stc_left_data
 		assign stc_left_data[0][i] = i_left_data[i];
 	end
 
-	for(int j = 0; j < PE_ARRAY_W; j++) begin
-		for(int i = 0; i < PE_ARRAY_H; i++) begin
+	for(genvar j = 0; j < PE_ARRAY_W; j++) begin: gen_pe_mesh_w
+		for(genvar i = 0; i < PE_ARRAY_H; i++) begin: gen_pe_mesh_h
 			pe #(.ID_VAL(i), .ID_WIDTH($clog2(PE_ARRAY_H)), .IN_DATA_WIDTH(IN_DATA_WIDTH), .OUT_DATA_WIDTH(OUT_DATA_WIDTH))
-			(
+			u_pe(
 				.clk(clk),
 				.rst(rst),
 				.i_load_vld(stc_load_vld[j][i]),
@@ -62,12 +63,11 @@ generate
 		end
 	end
 
-	for(int i = 0; i < PE_ARRAY_W; i++) begin
-		o_down_data[i] = stc_up_data[PE_ARRAY_H][i];
+	for(genvar i = 0; i < PE_ARRAY_W; i++) begin: gen_o_down_data
+		assign o_down_data[i] = stc_up_data[i][PE_ARRAY_W];
 	end
 
 endgenerate
 
-
-
+endmodule
 
