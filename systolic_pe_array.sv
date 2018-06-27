@@ -15,7 +15,7 @@ module systolic_pe_array
 	input logic [$clog2(PE_ARRAY_H)-1:0] i_load_id[0:PE_ARRAY_W-1],
 	input logic [IN_DATA_WIDTH-1:0] i_load_data[0:PE_ARRAY_W-1],
 	input logic i_pop_vld[0:PE_ARRAY_W-1],
-	input logic [IN_DATA_WIDTH-1:0] i_up_data[0:PE_ARRAY_W-1],
+	input logic [OUT_DATA_WIDTH-1:0] i_up_data[0:PE_ARRAY_W-1],
 	input logic [IN_DATA_WIDTH-1:0] i_left_data[0:PE_ARRAY_H-1],
 	output logic [OUT_DATA_WIDTH-1:0] o_down_data[0:PE_ARRAY_W-1]
 );

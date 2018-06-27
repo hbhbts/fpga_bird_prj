@@ -33,7 +33,7 @@ localparam LF2RT_PN = 1;
 
 logic hit_id;
 logic [1-1:0] load_index;
-logic [IN_DATA_WIDTH-1:0] load_wgt[0:1-1];
+logic [IN_DATA_WIDTH-1:0] load_wgt[0:1];
 logic [1-1:0] pop_index;
 logic pop_vld_s[0:UP2DN_PN];
 logic [OUT_DATA_WIDTH-1:0] up_data_r0;
@@ -64,7 +64,7 @@ always_ff @(posedge clk) begin
 	else
 		o_load_vld <= 1;
 	o_load_id <= i_load_id;
-	o_load_data <= o_load_data;
+	o_load_data <= i_load_data;
 end
 
 always_ff @(posedge clk) begin
@@ -106,7 +106,7 @@ generate
 	end
 endgenerate
 
-assign o_right_data = right_data_s[LF2RT_PN-1];
+assign o_right_data = right_data_s[LF2RT_PN];
 
 endmodule
 
