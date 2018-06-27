@@ -1,5 +1,5 @@
 //pe
-`include "utils.pkg"
+`include "utils_pkg.sv"
 
 module pe 
 #(
@@ -30,6 +30,18 @@ module pe
 
 localparam UP2DN_PN = 3;
 localparam LF2RT_PN = 1;
+
+logic hit_id;
+logic [1-1:0] load_index;
+logic [IN_DATA_WIDTH-1:0] load_wgt[0:1-1];
+logic [1-1:0] pop_index;
+logic pop_vld_s[0:UP2DN_PN];
+logic [OUT_DATA_WIDTH-1:0] up_data_r0;
+logic [IN_DATA_WIDTH-1:0] left_data_r0;
+logic [IN_DATA_WIDTH-1:0] right_data_s[0:LF2RT_PN];
+
+
+
 
 assign hit_id = in_load_vld && i_load_id == ID_VAL;
 
