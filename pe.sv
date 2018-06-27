@@ -40,6 +40,7 @@ logic pop_vld_s[0:UP2DN_PN];
 logic [OUT_DATA_WIDTH-1:0] up_data_r0;
 logic [OUT_DATA_WIDTH-1:0] down_data_r0;
 logic [IN_DATA_WIDTH-1:0] left_data_r0;
+logic [IN_DATA_WIDTH-1:0] left_data_r1;
 logic [IN_DATA_WIDTH-1:0] right_data_s[0:LF2RT_PN];
 
 
