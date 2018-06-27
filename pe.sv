@@ -99,7 +99,7 @@ always_ff @(posedge clk) begin
 end
 
 always_ff @(posedge clk) begin
-	down_data_r0 <= left_data_r1 * load_wgt_r0[pop_index] + up_data_r1;
+	down_data_r0 <= left_data_r1 * load_wgt_r0[pop_index] + up_data_r0;
 	o_down_data <= down_data_r0;
 end
 
