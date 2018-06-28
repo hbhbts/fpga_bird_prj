@@ -3,8 +3,8 @@
 
 module systolic_pe_array 
 #(
-	parameter int PE_ARRAY_W = 4,
-	parameter int PE_ARRAY_H = 4,
+	parameter int PE_ARRAY_W = 32,
+	parameter int PE_ARRAY_H = 32,
 	parameter int IN_DATA_WIDTH = 8,
 	parameter int OUT_DATA_WIDTH = 24
 )

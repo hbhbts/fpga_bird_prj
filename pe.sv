@@ -34,6 +34,10 @@ localparam LF2RT_PN = 1;
 logic hit_id;
 logic [1-1:0] load_index;
 logic [IN_DATA_WIDTH-1:0] load_wgt[0:1];
+logic [IN_DATA_WIDTH-1:0] load_wgt_r0;
+logic [IN_DATA_WIDTH-1:0] load_wgt_r1;
+logic [IN_DATA_WIDTH-1:0] load_wgt_r2;
+logic [IN_DATA_WIDTH-1:0] load_wgt_r3;
 logic [1-1:0] pop_index;
 logic pop_vld_s[0:UP2DN_PN];
 logic [OUT_DATA_WIDTH-1:0] up_data_r0;
@@ -41,6 +45,7 @@ logic [OUT_DATA_WIDTH-1:0] up_data_r1;
 logic [OUT_DATA_WIDTH-1:0] down_data_r0;
 logic [IN_DATA_WIDTH-1:0] left_data_r0;
 logic [IN_DATA_WIDTH-1:0] left_data_r1;
+logic [IN_DATA_WIDTH-1:0] left_data_r2;
 logic [IN_DATA_WIDTH-1:0] right_data_s[0:LF2RT_PN];
 
 
@@ -89,14 +94,19 @@ endgenerate
 assign o_pop_vld = pop_vld_s[UP2DN_PN];
 
 always_ff @(posedge clk) begin
-	up_data_r0 <= i_up_data;
-	up_data_r1 <= up_data_r0;
+	load_wgt_r0 <= load_wgt[pop_index];
+	load_wgt_r1 <= load_wgt_r0;
+	load_wgt_r2 <= load_wgt_r1;
+	load_wgt_r3 <= load_wgt_r2;
 	left_data_r0 <= i_left_data;
 	left_data_r1 <= left_data_r0;
+	left_data_r2 <= left_data_r1;
+	up_data_r0 <= i_up_data;
+	up_data_r1 <= up_data_r0;
 end
 
 always_ff @(posedge clk) begin
-	down_data_r0 <= left_data_r1 * up_data_r1 + load_wgt[pop_index];
+	down_data_r0 <= left_data_r2 * load_wgt_r3 + up_data_r1;
 	o_down_data <= down_data_r0;
 end
 
